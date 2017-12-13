@@ -8,8 +8,17 @@
 #ifndef PAINTBRUSH_H_
 #define PAINTBRUSH_H_
 
-class PaintBrush : Reset{
+#include "Device.h"
+#include "Arduino.h"
+#include <Servo.h>
+
+
+class PaintBrush : public Device {
+	Servo paintBrushServo;
+
 public:
+
+	//Constructor/Destructor
 	PaintBrush();
 	virtual ~PaintBrush();
 };

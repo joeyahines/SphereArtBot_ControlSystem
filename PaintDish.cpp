@@ -7,8 +7,10 @@
 
 #include "PaintDish.h"
 
-PaintDish::PaintDish() {
-	// TODO Auto-generated constructor stub
+PaintDish::PaintDish(int c, PaintDish::Color cArray[] , Servo s) {
+	numberOfColors = c;
+	//colorArray = cArray;
+	Servo servo = s;
 
 }
 

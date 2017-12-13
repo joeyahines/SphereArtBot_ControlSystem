@@ -7,15 +7,21 @@
 
 #ifndef AXIS_H_
 #define AXIS_H_
-#include "Arduino.h"
 
-class Axis : Reset{
-	Motor motor1;
-	Motor motor2;
-	Encoder encoder1;
-	Encoder encoder2;
-	LimitSwitch lowStopSwitch;
-	LimitSwitch highStopSwitch;
+#include "Arduino.h"
+#include "Motor.h"
+#include "Encoder.h"
+#include "LimitSwitch.h"
+#include "Device.h"
+
+
+class Axis : public Device{
+	Motor * motor1;
+	Motor * motor2;
+	Encoder * encoder1;
+	Encoder * encoder2;
+	LimitSwitch * lowStopSwitch;
+	LimitSwitch * highStopSwitch;
 
 	double maxAngle;
 	int maxCount = 0;
@@ -24,14 +30,14 @@ class Axis : Reset{
 public:
 	double getMaxAngle();
 	double getCurrentAngle();
-	double setAngle(unsigned double);
+	double setAngle(double);
 	int getAverageEncoderCount();
 
 	void reset();
 
 
 	//Constructor/Destructor
-	Axis(Motor, Motor, Encoder, Encoder, LimitSwitch, LimitSwitch, double);
+	Axis(Motor *, Motor *, Encoder *, Encoder * , LimitSwitch *, LimitSwitch *, double);
 	virtual ~Axis();
 };
 

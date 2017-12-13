@@ -14,7 +14,7 @@ void Axis::reset() {
 	setAxisSpeed(-25);
 
 	//While the low switch is not pressed
-	while(!lowStopSwitch.getState()) {
+	while(!lowStopSwitch->getState()) {
 		//Delay 10ms
 		delay(10);
 	}
@@ -23,24 +23,18 @@ void Axis::reset() {
 	setAxisSpeed(0);
 
 	//Reset Encoders
-	encoder1.resetCount();
-	encoder2.resetCount();
+	encoder1->write(0);
+	encoder2->write(0);
 
 	//Go to max angle
 	setAxisSpeed(25);
 
 	//While the high switch is not pressed
-	while(!highStopSwitch.getState()) {
+	while(!highStopSwitch->getState()) {
 		//Delay 10ms
 		delay(10);
 	}
 
-	//Reset Encoders
-	encoder1.resetCount();
-	encoder2.resetCount();
-
-	//Go to max angle
-	setAxisSpeed(25);
 
 	maxCount = getAverageEncoderCount();
 }
@@ -52,8 +46,8 @@ void Axis::reset() {
  * 	int	speed	Speed of the axis (-100 to 100)
  */
 void Axis::setAxisSpeed(int speed) {
-	motor1.setMotorSpeed(speed);
-	motor2.setMotorSpeed(speed);
+	motor1->setMotorSpeed(speed);
+	motor2->setMotorSpeed(speed);
 }
 
 /*	double Axis::getCurrentAngle()
@@ -68,7 +62,7 @@ double Axis::getCurrentAngle() {
 
 /*	double Axis::setAngle(unsigned double angle)
  *
- * 	Moves the axis to the specified angle. This method is to be called in the
+ * 	Moves the axis to the specified angle-> This method is to be called in the
  * 	loop function to ensure parallelism
  *
  * 	Parameters:
@@ -77,7 +71,7 @@ double Axis::getCurrentAngle() {
  * 	Returns:
  * 	Current angle of the axis
  */
-double Axis::setAngle(unsigned double angle) {
+double Axis::setAngle(double angle) {
 
 	angle = max(maxAngle, angle);
 
@@ -91,7 +85,7 @@ double Axis::setAngle(unsigned double angle) {
 }
 
 int Axis::getAverageEncoderCount() {
-	return (encoder1.getRawCount() + encoder2.getRawCount())/2;
+	return (encoder1->read() + encoder2->read())/2;
 }
 
 /*	Axis::Axis(Motor m1, Motor m2, Encoder e1, Encoder e2, LimitSwitch ls1, LimitSwitch ls2, double maxA)
@@ -106,7 +100,7 @@ int Axis::getAverageEncoderCount() {
  * 	LimitSwitch ls2		Limit switch for max angle
  * 	double		maxA	Max angle
  */
-Axis::Axis(Motor m1, Motor m2, Encoder e1, Encoder e2, LimitSwitch ls1, LimitSwitch ls2, double maxA) {
+Axis::Axis(Motor * m1, Motor * m2, Encoder * e1, Encoder * e2, LimitSwitch * ls1, LimitSwitch * ls2, double maxA) {
 	motor1 = m1;
 	motor2 = m2;
 	encoder1 = e1;

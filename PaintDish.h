@@ -8,9 +8,32 @@
 #ifndef PAINTDISH_H_
 #define PAINTDISH_H_
 
-class PaintDish : Reset {
+#include "Device.h"
+#include "Arduino.h"
+#include <Servo.h>
+
+class PaintDish : public Device {
 public:
-	PaintDish();
+	struct Color {
+		unsigned char r;
+		unsigned char y;
+		unsigned char b;
+	};
+
+private:
+	int numberOfColors;
+	Servo servo;
+	Color colorArray[];
+
+public:
+	void selectColor();
+	Color getCurrentColot();
+
+	void reset();
+
+
+	//Constrctor/Destructor
+	PaintDish(int , Color [] , Servo);
 	virtual ~PaintDish();
 };
 
