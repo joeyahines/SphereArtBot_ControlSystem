@@ -10,33 +10,55 @@
  * 	Calibrates motors to define stop and start positions
  */
 void Axis::reset() {
-	//Go to min angle
-	setAxisSpeed(-25);
+	goToMinAngle();
 
-	//While the low switch is not pressed
-	while(!lowStopSwitch->getState()) {
-		//Delay 10ms
-		delay(10);
-	}
+	resetEncoders();
 
-	//Stop Motors
-	setAxisSpeed(0);
-
-	//Reset Encoders
-	encoder1->write(0);
-	encoder2->write(0);
-
-	//Go to max angle
-	setAxisSpeed(25);
-
-	//While the high switch is not pressed
-	while(!highStopSwitch->getState()) {
-		//Delay 10ms
-		delay(10);
-	}
-
+	goToMaxAngle();
 
 	maxCount = getAverageEncoderCount();
+}
+
+void Axis::goToMinAngle() {
+	setAxisSpeed(-25);
+	waitUntilLowerLimitSwitchPressed();
+	stopMotors();
+
+}
+
+void Axis::goToMaxAngle() {
+	setAxisSpeed(25);
+	waitUntilHigherLimitSwitchPressed()
+	stopMotors();
+
+}
+
+void Axis::stopMotors() {
+	setAxisSpeed(0);
+}
+
+void Axis::waitUntilLowerLimitSwitchPressed() {
+	waitForLimitSwitchActivated(lowStopSwitch);
+
+}
+
+void Axis::waitUntilHigherLimitSwitchPressed() {
+	waitForLimitSwitchActivated(highStopSwitch);
+}
+
+void Axis::waitForLimitSwitchActivated(LimitSwitch * limitSwitch) {
+	while(!limitReached(limitSwitch)) {
+			delay(10);
+	}
+}
+
+bool Axis::limitReached(LimitSwitch * limitSwitch) {
+	return limitSwitch->getState();
+}
+
+void Axis::resetEncoders() {
+	encoder1->write(0);
+	encoder2->write(0);
 }
 
 /*	void Axis::setAxisSpeed(int speed)

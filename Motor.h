@@ -18,9 +18,15 @@ class Motor {
 	double multiplier;
 	bool reversed;
 
+	void reverse();
+	void forward();
+	int getCalculatedMotorValue(int);
+	int convertPercentToPWMValue(int);
+	void writePWMValueToMotor(int);
+
 public:
-	int convertPercentToMotorValue(int);
-	void setMotorSpeed(int value);
+	bool PWM_IsNegative(int);
+	void setMotorSpeed(int);
 
 	//Constructor/Destructor
 	Motor(int, int, int, double, bool);

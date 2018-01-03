@@ -27,6 +27,15 @@ class Axis : public Device{
 	int maxCount = 0;
 
 	void setAxisSpeed(int);
+	void waitUntilLowerLimitSwitchPressed();
+	void waitUntilHigherLimitSwitchPressed();
+	void waitForLimitSwitchActivated(LimitSwitch *);
+	bool limitReached(LimitSwitch *);
+	void goToMinAngle();
+	void goToMaxAngle();
+	void resetEncoders();
+	void stopMotors();
+
 public:
 	double getMaxAngle();
 	double getCurrentAngle();

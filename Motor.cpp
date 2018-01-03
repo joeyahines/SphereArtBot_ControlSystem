@@ -7,6 +7,42 @@
 
 #include "Motor.h"
 
+/*	void Motor::writeToMotor(int value)
+ * 	Writes a percent speed to a PWM Motor
+ *
+ *	Parameters:
+ *	int		value	value from -100 to 100
+ *
+ */
+void Motor::setMotorSpeed(int value) {
+	int pwmValue = getCalculatedMotorValue(value);
+
+	if (value > 0) {
+		forward();
+	}
+	else if (value < 0) {
+		reverse();
+	}
+	//TODO May have special breaking case for some motor controllers
+
+	writePWMValueToMotor(pwmValue);
+
+}
+
+void Motor::reverse() {
+	digitalWrite(in1, LOW);
+	digitalWrite(in2, HIGH);
+}
+
+void Motor::Forward() {
+	digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+}
+
+void Motor::writePWMValueToMotor(int pwmValue) {
+	analogWrite(pwmPin, abs(pwmValue));
+}
+
 /*	int Motor::convertPercentToMotorValue(int value
  * 	Takes a percent value of -100 to 100 and converts to a PWM value of
  * 	0 to 255
@@ -17,18 +53,28 @@
  *	Returns:
  *	Corrected Motor Speed from -255 to 255
  */
-int Motor::convertPercentToMotorValue(int value) {
+int Motor::getCalculatedMotorValue(int powerInPercent) {
+	int pwmValue = convertPercentToPWMValue*multiplier*inverse;
 
-	//Define inverse as 1
-	int inverse = 1;
+	if (reversed) {
+		pwmValue = -pwmValue;
+	}
 
-	//If the motor is to be reversed
-	if (reversed) inverse = inverse * -1;
+	if (pwmValue > 0) {
+		pwmValue = max(255,pwmValue);
+	}
+	else if (pwmValue < 0) {
+		pwmValue = min(-255,pwmValue);
+	}
 
-	//Return the PWM value of the speed
-	int pwmValue =  value*2.55*multiplier*inverse;
+	return pwmValue;
+}
 
-	//Ensure value is between -255 and 255
+int Motor::convertPercentToPWMValue(int valueToConvert) {
+	return valueToConvert*2.55;
+}
+
+bool Motor::PWM_IsNegative(int PWM_Value) {
 	if (pwmValue > 0) {
 		pwmValue = max(255,pwmValue);
 	}
@@ -36,42 +82,11 @@ int Motor::convertPercentToMotorValue(int value) {
 		pwmValue = min(-255,pwmValue);
 	}
 	else {
-		pwmValue = 0;
+		return 0;
 	}
-
-	return pwmValue;
 }
 
-/*	void Motor::writeToMotor(int value)
- * 	Writes a percent speed to a PWM Motor
- *
- *	Parameters:
- *	int		value	value from -100 to 100
- *
- */
-void Motor::setMotorSpeed(int value) {
-	//Converts a percent
-	int pwmValue = convertPercentToMotorValue(value);
 
-	//If the PPWM value is positive, set the enable pins to forward
-	if (value > 0) {
-		  digitalWrite(in1, HIGH);
-		  digitalWrite(in2, LOW);
-	}
-	//If the PPWM value is negative, set the enable pins to backwards
-	else if (value < 0) {
-		digitalWrite(in1, LOW);
-		digitalWrite(in2, HIGH);
-	}
-	//TODO May have special breaking case for some motor controllers
-	else {
-
-	}
-
-	//Write the absolute value PWM to the motor
-	analogWrite(pwmPin, abs(pwmValue));
-
-}
 
 /*	Motor(int pwm , int i1, int i2, double multi, bool rev)
  *	Defines a Motor object

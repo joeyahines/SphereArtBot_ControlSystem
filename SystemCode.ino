@@ -7,6 +7,7 @@
 #include <Encoder.h>
 #include "Device.h"
 #include "Queue.h"
+#include "SerialCommunication.h"
 
 #include "LimitSwitch.h"
 
@@ -21,9 +22,8 @@
  * |
  */
 
-// Serial Varibales
-//bool serialRecivied;
-//String command;
+// Serial Variables
+SerialCommunication * inputStream;
 
 // Command Variables **********************************************************
 // Array to hold the names of all the commands
@@ -81,66 +81,77 @@ int commandsReceivied = 0;
 Queue * commandQueue;
 
 void setup() {
-
+	inputStream = new SerialCommunication();
 }
 
 void loop() {
-	//if(serialRecivied) {
 	if(Serial.available()) {
-		String input;
-		input = Serial.readStringUntil('\n');
-		if (input == "new") {
-			while(!Serial.available());
-			int commandsReceivied = 0;
-			while (commandsReceivied < commandQueue->getSize()) {
-				String command = Serial.readStringUntil('\n');
-				int id = findCommandId(command);
-
-				while(!Serial.available());
-				int numberOfValues = Serial.parseInt();
-				double * values = new double[numberOfValues];
-				for (int i = 0; i < numberOfValues; i++) {
-					values[i] = (double) Serial.parseFloat();
-				}
-
-				commandQueue->addCommand(id, numberOfValues, values);
-
-				commandsReceivied++;
-			}
-
+		if(inputStream->getStringFromSerial() == "new") {
+			createNewCommandQueue();
 			runCommandQueue();
 			delete commandQueue;
 		}
-		else {
-			while(!Serial.available());
-			int size = Serial.parseInt();
-			commandQueue =  new Queue(size);
-		}
-
 	}
 }
 
+Queue createNewCommandQueue() {
+	int QueueSize = getQueueSize();
+	Queue  * newQueue = new Queue(QueueSize);
+
+	Serial.println("Ready to Accept Commands");
+
+	newQueue = getNewCommands(newQueue);
+
+	return newQueue;
 
 
-		/*
-		switch(commandID) {
-		case 0:
-			reset();
-			break;
-		case 1:
-			double longitudeAngle;
-			double latitudeAngle;
+}
 
-			longitudeAngle = Serial.parseFloat();
-			latitudeAngle =  Serial.parseFloat();
+int getQueueSize() {
+	Serial.println("How many commands are in this queue?");
+	int queueSize = inputStream->getIntFromSerial();
 
-			moveTo(longitudeAngle, latitudeAngle);
-			break;
+	while  (queueSize == -999) {
+	  Serial.println("Error, int invalid");
+	}
 
-		default:
-			Serial.println(0);
-			*/
+	return queueSize;
+}
 
+Queue * getNewCommands(Queue * q) {
+    //Get all the commands from serial
+    int commandsReceivied = 0;
+    while (commandsReceivied < commandQueue->getSize()) {
+  	  //Get the command
+
+  	  String command = inputStream->getStringFromSerial();
+  	  int commandId = findCommandId(command);
+
+  	  //Get the number of values
+  	  Serial.println("How many values?");
+
+  	  int numberOfValues = inputStream->getIntFromSerial();
+
+  	  Serial.println(numberOfValues);
+
+  	  //Double array to store values
+  	  double * values;
+  	  values = getDoubleValuesFromStream(inputStream,values, numberOfValues);
+
+  	  //add the command to the Queue
+  	  commandQueue->addCommand(id, numberOfValues, values);
+
+  	  commandsReceivied++;
+    }
+}
+
+double * getDoubleValuesFromStream(SerialCommunication stream, Double * doubleArrayPointer, int numberOfValues) {
+	for (int i = 0; i < numberOfValues; i++) {
+		doubleArrayPointer[i] = stream->getDoubleFromSerial();
+	}
+
+	return doubleArrayPointer;
+}
 
 void runCommandQueue() {
 
@@ -207,29 +218,7 @@ int findCommandId(String c) {
 
 }
 
-/*
-void serialEvent() {
-  //Get all data from serial
-  while (Serial.available()) {
-    // get the new byte:
-    char inChar = (char)Serial.read();
 
-    //Add the char to the command string
-    command += inChar;
-
-    //If Line complete
-    if (inChar == '\n') {
-    	serialRecivied = true;
-
-    }
-    //Else add character to command string
-    else {
-    	command += inChar;
-    }
-
-  }
-}
-*/
 void moveTo(double lon, double lat) {
 	/*
 	while () {

@@ -15,10 +15,12 @@
 
 class PaintBrush : public Device {
 	Servo paintBrushServo;
-
+	int convertHeightToAngle(float height);
+	void setServoAngle();
 public:
 
 	//Constructor/Destructor
+	void setPaintBrushHeight(float);
 	PaintBrush();
 	virtual ~PaintBrush();
 };

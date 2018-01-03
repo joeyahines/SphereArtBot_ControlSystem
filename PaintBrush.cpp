@@ -12,6 +12,17 @@ PaintBrush::PaintBrush() {
 
 }
 
+void PaintBrush::setPaintBrushHeight(float height) {
+
+}
+
+int PaintBrush::convertHeightToAngle(float height) {
+}
+
+void PaintBrush::setServoAngle() {
+}
+
+
 PaintBrush::~PaintBrush() {
 	// TODO Auto-generated destructor stub
 }
