@@ -22,6 +22,7 @@ public:
 	String getStringFromSerial();
 	int getIntFromSerial();
 	double getDoubleFromSerial();
+	double * getDoublesValuesFromSerial(double *, int);
 };
 
 #endif /* SERIALCOMMUNICATION_H_ */

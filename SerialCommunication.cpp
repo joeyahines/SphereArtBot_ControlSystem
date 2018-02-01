@@ -36,6 +36,14 @@ int SerialCommunication::getIntFromSerial() {
   }
 }
 
+double * getDoubleValuesFromStream(double * doubleArrayPointer, int numberOfValues) {
+	for (int i = 0; i < numberOfValues; i++) {
+		doubleArrayPointer[i] = getDoubleFromSerial();
+	}
+
+	return doubleArrayPointer;
+}
+
 double SerialCommunication::getDoubleFromSerial() {
   if(!waitForSerial()) {
     return ERROR;
