@@ -28,7 +28,7 @@ void Axis::goToMinAngle() {
 
 void Axis::goToMaxAngle() {
 	setAxisSpeed(25);
-	waitUntilHigherLimitSwitchPressed()
+	waitUntilHigherLimitSwitchPressed();
 	stopMotors();
 
 }
