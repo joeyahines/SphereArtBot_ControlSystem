@@ -24,7 +24,6 @@ void Motor::setMotorSpeed(int value) {
 		reverse();
 	}
 	//TODO May have special breaking case for some motor controllers
-
 	writePWMValueToMotor(pwmValue);
 
 }
@@ -34,7 +33,7 @@ void Motor::reverse() {
 	digitalWrite(in2, HIGH);
 }
 
-void Motor::Forward() {
+void Motor::forward() {
 	digitalWrite(in1, HIGH);
 	digitalWrite(in2, LOW);
 }
@@ -54,36 +53,22 @@ void Motor::writePWMValueToMotor(int pwmValue) {
  *	Corrected Motor Speed from -255 to 255
  */
 int Motor::getCalculatedMotorValue(int powerInPercent) {
-	int pwmValue = convertPercentToPWMValue*multiplier*inverse;
-
+	int pwmValue = convertPercentToPWMValue(powerInPercent)*multiplier;
 	if (reversed) {
 		pwmValue = -pwmValue;
 	}
 
 	if (pwmValue > 0) {
-		pwmValue = max(255,pwmValue);
+		pwmValue = min(255,pwmValue);
 	}
 	else if (pwmValue < 0) {
-		pwmValue = min(-255,pwmValue);
+		pwmValue = max(-255,pwmValue);
 	}
-
 	return pwmValue;
 }
 
 int Motor::convertPercentToPWMValue(int valueToConvert) {
 	return valueToConvert*2.55;
-}
-
-bool Motor::PWM_IsNegative(int PWM_Value) {
-	if (pwmValue > 0) {
-		pwmValue = max(255,pwmValue);
-	}
-	else if (value < 0) {
-		pwmValue = min(-255,pwmValue);
-	}
-	else {
-		return 0;
-	}
 }
 
 
