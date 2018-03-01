@@ -28,7 +28,7 @@ public:
 	int getIntFromStream();
 	double getDoubleFromStream();
   double * getDoubleValuesFromStream(double *, int);
-
+  void clearStream();
   void flushStream();
   bool streamAvailable();
   

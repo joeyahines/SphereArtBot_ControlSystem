@@ -94,6 +94,10 @@ double SerialStream::getDoubleFromStream() {
   }
 }
 
+void SerialStream::clearStream() {
+  getStringFromStream();
+}
+
 void SerialStream::flushStream() {
   Serial.flush();
 }
